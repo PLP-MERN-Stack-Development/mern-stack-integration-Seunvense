@@ -1,5 +1,6 @@
 // server/controllers/categories.js
 const Category = require("../models/category");
+const { validateCategory } = require("../middleware/validation");
 
 const getCategories = async (req, res) => {
   try {
@@ -10,14 +11,17 @@ const getCategories = async (req, res) => {
   }
 };
 
-const createCategory = async (req, res) => {
-  try {
-    const category = new Category(req.body);
-    await category.save();
-    res.status(201).json(category);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
+const createCategory = [
+  validateCategory,
+  async (req, res) => {
+    try {
+      const category = new Category(req.body);
+      await category.save();
+      res.status(201).json(category);
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
+  },
+];
 
 module.exports = { getCategories, createCategory };
