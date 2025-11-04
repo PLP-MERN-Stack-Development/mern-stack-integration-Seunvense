@@ -27,9 +27,9 @@ const PostSchema = new mongoose.Schema(
       type: String,
       maxlength: [200, "Excerpt cannot be more than 200 characters"],
     },
-    // author: {
+    //  author: {
     // type: mongoose.Schema.Types.ObjectId,
-    // ref: "User",
+    //  ref: "User",
     // required: true,
     // },
     category: {

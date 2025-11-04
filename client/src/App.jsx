@@ -12,8 +12,8 @@ function App() {
         <div className="container mx-auto p-4">
           <Routes>
             <Route path="/" element={<PostList />} />
-            <Route path="/create" element={<CreatePost />} />
-            <Route path="/post/:id" element={<PostDetail />} />
+             <Route path="/create" element={<CreatePost />} />
+             <Route path="/post/:id" element={<PostDetail />} />
           </Routes>
         </div>
       </div>
