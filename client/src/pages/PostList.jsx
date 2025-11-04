@@ -1,25 +1,8 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { postService } from '../services/api';
+import { usePosts } from '../context/PostContext';
 
 export default function PostList() {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const data = await postService.getAllPosts();
-        setPosts(data.posts || data);
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to load posts. Please try again.');
-        setLoading(false);
-      }
-    };
-    fetchPosts();
-  }, []);
+  const { posts, loading, error, deletePost } = usePosts();
 
   if (loading) return <p className="text-center p-8">Loading posts...</p>;
   if (error) return <p className="text-red-500 text-center p-8">{error}</p>;
@@ -42,11 +25,16 @@ export default function PostList() {
                 </Link>
               </h2>
               <p className="text-gray-600 mb-3">
-                {post.excerpt || post.content.substring(0, 120)}...
+                {post.excerpt || post.content?.substring(0, 120) || "No content"}...
               </p>
-              <div className="text-sm text-gray-500">
-                <span>By {post.author?.name || 'Unknown'}</span> |{' '}
-                <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+              <div className="text-sm text-gray-500 flex justify-between">
+                <span>By {post.author?.name || 'Unknown'}</span>
+                <button
+                  onClick={() => deletePost(post._id)}
+                  className="text-red-600 hover:underline"
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}

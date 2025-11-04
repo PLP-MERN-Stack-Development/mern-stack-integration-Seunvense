@@ -6,7 +6,8 @@ const postSchema = Joi.object({
   content: Joi.string().min(10).required(),
   category: Joi.string()
     .regex(/^[0-9a-fA-F]{24}$/)
-    .required(),
+    .optional()
+    .allow("", null),
   tags: Joi.array().items(Joi.string()),
   isPublished: Joi.boolean(),
 });

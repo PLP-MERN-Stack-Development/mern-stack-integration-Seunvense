@@ -30,14 +30,23 @@ const getPost = async (req, res) => {
 const createPost = [
   validatePost,
   async (req, res) => {
+    console.log("📦 Incoming body in controller:", req.body);
     try {
+      // 👇 Normalize category to null if empty
+      if (!req.body.category || req.body.category.trim() === "") {
+        req.body.category = null;
+      }
+
       const post = new Post(req.body);
       await post.save();
+
       const populated = await Post.findById(post._id)
         // .populate("author", "name")
         .populate("category", "name");
+
       res.status(201).json(populated);
     } catch (err) {
+      console.error("❌ Error saving post:", err.message);
       res.status(400).json({ message: err.message });
     }
   },
