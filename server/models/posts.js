@@ -35,7 +35,7 @@ const PostSchema = new mongoose.Schema(
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
-      required: false,
+      required: true,
     },
     tags: [String],
     isPublished: {
@@ -69,7 +69,7 @@ const PostSchema = new mongoose.Schema(
 
 // Create slug from title before saving
 PostSchema.pre("save", function (next) {
-  if (!this.isModified("title")) {
+  if (!this.isMPdified("title")) {
     return next();
   }
 

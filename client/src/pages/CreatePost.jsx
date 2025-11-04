@@ -1,18 +1,18 @@
-import { useState } from 'react';
-import { usePosts } from '../context/PostContext';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { usePosts } from "../context/PostContext";
+import { useNavigate } from "react-router-dom";
 
 console.log("✅ CreatePost component loaded");
 
 export default function CreatePost() {
   const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    category: '',
-    tags: ''
+    title: "",
+    content: "",
+    category: "",
+    tags: "",
   });
   const [errors, setErrors] = useState({});
-  const { createPost } = usePosts();
+  const { createPost, categories } = usePosts();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -21,8 +21,9 @@ export default function CreatePost() {
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.title.trim()) newErrors.title = 'Title is required';
-    if (!formData.content.trim()) newErrors.content = 'Content is required';
+    if (!formData.title.trim()) newErrors.title = "Title is required";
+    if (!formData.content.trim()) newErrors.content = "Content is required";
+    if (!formData.category) newErrors.category = "Category is required";
     return newErrors;
   };
 
@@ -37,11 +38,14 @@ export default function CreatePost() {
     try {
       await createPost({
         ...formData,
-        tags: formData.tags.split(',').map(t => t.trim()).filter(t => t)
+        tags: formData.tags
+          .split(",")
+          .map((t) => t.trim())
+          .filter((t) => t),
       });
-      navigate('/');
+      navigate("/");
     } catch (err) {
-      setErrors({ submit: 'Failed to create post. Try again.' });
+      setErrors({ submit: "Failed to create post. Try again." });
     }
   };
 
@@ -58,7 +62,9 @@ export default function CreatePost() {
             className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter post title"
           />
-          {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
+          {errors.title && (
+            <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+          )}
         </div>
 
         <div>
@@ -71,11 +77,35 @@ export default function CreatePost() {
             className="w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Write your post..."
           />
-          {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content}</p>}
+          {errors.content && (
+            <p className="text-red-500 text-sm mt-1">{errors.content}</p>
+          )}
         </div>
 
         <div>
-          <label className="block font-medium mb-1">Tags (comma separated)</label>
+          <label className="block font-medium mb-1">Category</label>
+          <select
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            className="w-full border rounded p-2"
+          >
+            <option value="">Select category</option>
+            {categories.map((cat) => (
+              <option key={cat._id} value={cat._id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+          {errors.category && (
+            <p className="text-red-500 text-sm mt-1">{errors.category}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block font-medium mb-1">
+            Tags (comma separated)
+          </label>
           <input
             name="tags"
             value={formData.tags}
