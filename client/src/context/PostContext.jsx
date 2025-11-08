@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { postService } from "../services/api";
+import { postService, categoryService } from "../services/api";
 
 const PostContext = createContext();
 
@@ -51,7 +51,7 @@ export function PostProvider({ children }) {
       const data = await categoryService.getAllCategories();
       setCategories(data);
     } catch (err) {
-      console.error("Failed to load categories");
+      console.error("❌ Failed to load categories:", err.message);
     }
   };
 

@@ -27,11 +27,11 @@ const PostSchema = new mongoose.Schema(
       type: String,
       maxlength: [200, "Excerpt cannot be more than 200 characters"],
     },
-    //  author: {
-    // type: mongoose.Schema.Types.ObjectId,
-    //  ref: "User",
-    // required: true,
-    // },
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
@@ -69,7 +69,7 @@ const PostSchema = new mongoose.Schema(
 
 // Create slug from title before saving
 PostSchema.pre("save", function (next) {
-  if (!this.isMPdified("title")) {
+  if (!this.isModified("title")) {
     return next();
   }
 

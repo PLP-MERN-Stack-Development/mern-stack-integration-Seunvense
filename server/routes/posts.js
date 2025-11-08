@@ -1,4 +1,5 @@
 const express = require("express");
+const { authenticateUser } = require("../middleware/auth");
 const router = express.Router();
 const {
   getPosts,
@@ -10,7 +11,7 @@ const {
 
 router.get("/", getPosts);
 router.get("/:id", getPost);
-router.post("/", createPost);
+router.post("/", authenticateUser, createPost);
 router.put("/:id", updatePost);
 router.delete("/:id", deletePost);
 

@@ -1,0 +1,20 @@
+const mongoose = require("mongoose");
+const Category = require("./models/category");
+require("dotenv").config();
+
+const seed = async () => {
+  await mongoose.connect(process.env.MONGODB_URI);
+  console.log("Connected to MongoDB");
+
+  await Category.deleteMany({});
+  await Category.create({ name: "General" });
+  await Category.create({ name: "Technology" });
+  await Category.create({ name: "Education" });
+  await Category.create({ name: "Medicine" });
+  await Category.create({ name: "Research" });
+
+  console.log("Categories seeded");
+  process.exit();
+};
+
+seed();

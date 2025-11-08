@@ -4,7 +4,7 @@ const { validatePost } = require("../middleware/validation");
 const getPosts = async (req, res) => {
   try {
     const posts = await Post.find()
-      // .populate("author", "name")
+      .populate("author", "name")
       .populate("category", "name")
       .sort({ createdAt: -1 });
     res.json({ posts });
@@ -16,7 +16,7 @@ const getPosts = async (req, res) => {
 const getPost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id)
-      // .populate("author", "name")
+      .populate("author", "name")
       .populate("category", "name");
     if (!post) return res.status(404).json({ message: "Post not found" });
     post.viewCount += 1;
@@ -31,17 +31,22 @@ const createPost = [
   validatePost,
   async (req, res) => {
     console.log("📦 Incoming body in controller:", req.body);
+    console.log("👤 Authenticated user:", req.user); // check who is logged in
     try {
-      // 👇 Normalize category to null if empty
       if (!req.body.category || req.body.category.trim() === "") {
         req.body.category = null;
       }
 
-      const post = new Post(req.body);
+      // ✅ Attach the logged-in user's ID
+      const post = new Post({
+        ...req.body,
+        author: req.user.userId, // this line fixes it
+      });
+
       await post.save();
 
       const populated = await Post.findById(post._id)
-        // .populate("author", "name")
+        .populate("author", "name")
         .populate("category", "name");
 
       res.status(201).json(populated);
@@ -61,7 +66,7 @@ const updatePost = [
         { $set: req.body },
         { new: true, runValidators: true }
       )
-        //  .populate("author", "name")
+        .populate("author", "name")
         .populate("category", "name");
       if (!post) return res.status(404).json({ message: "Post not found" });
       res.json(post);
