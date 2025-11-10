@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { usePosts } from "../context/PostContext";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 console.log("✅ CreatePost component loaded");
 
@@ -14,6 +15,9 @@ export default function CreatePost() {
   const [errors, setErrors] = useState({});
   const { createPost, categories } = usePosts();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  console.log("👤 Current user:", user);
+  console.log("🪪 Token in localStorage:", localStorage.getItem("token"));
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,15 +33,23 @@ export default function CreatePost() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Post payload:", formData);
     const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
+    console.log("👤 Current user:", user);
+    console.log("📦 Payload being sent:", {
+      ...formData,
+      author: user?.userId,
+    });
+
     try {
       await createPost({
         ...formData,
+        author: user?._id,
         tags: formData.tags
           .split(",")
           .map((t) => t.trim())

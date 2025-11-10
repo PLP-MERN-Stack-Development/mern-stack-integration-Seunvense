@@ -4,6 +4,7 @@ const { StatusCodes } = require("http-status-codes");
 
 const authenticateUser = async (req, res, next) => {
   console.log("🛡️ Incoming Auth Check");
+  console.log("Incoming token:", req.headers.authorization);
 
   const authHeader = req.headers.authorization;
   console.log("🔑 Authorization Header:", authHeader);

@@ -46,6 +46,7 @@ if (process.env.NODE_ENV === "development") {
 app.use("/api/posts", postRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/auth", authRoutes);
+console.log("✅ posts.js route file loaded");
 
 // Root route
 app.get("/", (req, res) => {
